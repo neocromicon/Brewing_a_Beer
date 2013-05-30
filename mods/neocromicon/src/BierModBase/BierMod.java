@@ -1,4 +1,3 @@
-#Motherfucking first thing in your face
 package mods.neocromicon.src.BierModBase;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
