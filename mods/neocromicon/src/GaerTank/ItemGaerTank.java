@@ -5,25 +5,23 @@ import mods.neocromicon.src.BierModBase.BierMod;
 import mods.neocromicon.src.GaerTank.ItemGaerTank$1;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer$ItemRenderType;
-import net.minecraftforge.client.IItemRenderer$ItemRendererHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ItemGaerTank implements IItemRenderer
 {
     private ModelGaerTank modelGaerTank = new ModelGaerTank();
 
-    public boolean handleRenderType(ItemStack var1, IItemRenderer$ItemRenderType var2)
+    public boolean handleRenderType(ItemStack var1, ItemRenderType var2)
     {
         return true;
     }
 
-    public boolean shouldUseRenderHelper(IItemRenderer$ItemRenderType var1, ItemStack var2, IItemRenderer$ItemRendererHelper var3)
+    public boolean shouldUseRenderHelper(ItemRenderType var1, ItemStack var2, ItemRendererHelper var3)
     {
         return true;
     }
 
-    public void renderItem(IItemRenderer$ItemRenderType var1, ItemStack var2, Object ... var3)
+    public void renderItem(ItemRenderType var1, ItemStack var2, Object ... var3)
     {
         switch (ItemGaerTank$1.$SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[var1.ordinal()])
         {

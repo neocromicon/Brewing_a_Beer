@@ -22,11 +22,6 @@ public class DrunkEffect extends Potion
         this.sprite = var4;
     }
 
-    public DrunkEffect setPotionName(String var1)
-    {
-        return (DrunkEffect)super.setPotionName(var1);
-    }
-
     /**
      * Returns the index for the icon to display when the potion is active.
      */
@@ -59,9 +54,9 @@ public class DrunkEffect extends Potion
 
     /**
      * Set the potion name.
-     */
-    public Potion setPotionName(String var1)
+     */    
+    public DrunkEffect setPotionName(String name)
     {
-        return this.setPotionName(var1);
+      return (DrunkEffect)super.setPotionName(name);
     }
 }

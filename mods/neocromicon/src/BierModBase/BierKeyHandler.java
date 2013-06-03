@@ -1,36 +1,45 @@
 package mods.neocromicon.src.BierModBase;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.KeyBindingRegistry$KeyHandler;
-import cpw.mods.fml.common.TickType;
 import java.util.EnumSet;
+
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class BierKeyHandler extends KeyBindingRegistry$KeyHandler
-{
-    static KeyBinding myBinding = new KeyBinding("Beer settings", 12);
-    public EntityPlayer player;
+import org.lwjgl.input.Keyboard;
 
-    public BierKeyHandler()
-    {
-        super(new KeyBinding[] {myBinding}, new boolean[] {true});
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
+import cpw.mods.fml.common.TickType;
+
+public class BierKeyHandler extends KeyHandler {
+
+	   static KeyBinding myBinding = new KeyBinding("Beer settings", Keyboard.KEY_MINUS);
+	   public EntityPlayer player;
+
+	public BierKeyHandler()
+	{
+		super(new KeyBinding[]{myBinding}, new boolean[]{true});
+	}
+	
+	@Override
+	public String getLabel() {
+
+		return "BierKeyBinding";
+	}
+
+	@Override
+    public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {		
+		FMLClientHandler.instance().getClient().displayGuiScreen(new GuiBeerMenu(player));
     }
 
-    public String getLabel()
-    {
-        return "BierKeyBinding";
+    @Override
+    public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {
+
     }
 
-    public void keyDown(EnumSet var1, KeyBinding var2, boolean var3, boolean var4)
-    {
-        FMLClientHandler.instance().getClient().displayGuiScreen(new GuiBeerMenu(this.player));
-    }
-
-    public void keyUp(EnumSet var1, KeyBinding var2, boolean var3) {}
-
-    public EnumSet ticks()
-    {
-        return EnumSet.of(TickType.CLIENT);
+    @Override
+    public EnumSet<TickType> ticks() {
+            return EnumSet.of(TickType.CLIENT);
+            //I am unsure if any different TickTypes have any different effects.
     }
 }

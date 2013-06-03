@@ -6,10 +6,14 @@ import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
+
 import mods.neocromicon.src.BierFass.TileEntityBierFass;
 import mods.neocromicon.src.BierFass.TileEntityBierFassRenderer;
 import mods.neocromicon.src.GaerTank.ItemGaerTank;
@@ -17,6 +21,7 @@ import mods.neocromicon.src.GaerTank.TileEntityGaerTank;
 import mods.neocromicon.src.GaerTank.TileEntityGaerTankRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.logging.ILogAgent;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.dedicated.PropertyManager;
@@ -24,9 +29,9 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent$LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy extends CommonProxy implements ILogAgent
 {
     public PropertyManager propertyManagerObj;
     public static Minecraft mc = Minecraft.getMinecraft();
@@ -40,71 +45,57 @@ public class ClientProxy extends CommonProxy
         KeyBindingRegistry.registerKeyBinding(new BierKeyHandler());
         MinecraftForge.EVENT_BUS.register(new ClientProxy());
         TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
-        Properties var1;
-        File var2;
-        File var10000;
-        Minecraft var10003;
-        StringBuilder var10002;
 
         try
-        {
-            var1 = new Properties();
-            var10000 = new File;
-            var10002 = new StringBuilder();
-            var10003 = mc;
-            var10000.<init>(var10002.append(Minecraft.getMinecraftDir()).append("//config//").toString(), "Brewing_a_Beer_Update.cfg");
-            var2 = var10000;
-            var2.createNewFile();
-            var1.load(new FileInputStream(var2));
-            var1.setProperty("UpdateCheck", "true");
-            var1.store(new FileOutputStream(var2), "BeerMod Update Checker");
-        }
-        catch (Exception var4)
-        {
-            var4.printStackTrace();
-        }
-
-        try
-        {
-            var1 = new Properties();
-            var10000 = new File;
-            var10002 = new StringBuilder();
-            var10003 = mc;
-            var10000.<init>(var10002.append(Minecraft.getMinecraftDir()).append("//config//").toString(), "Brewing_a_Beer_Crafting_Settings.cfg");
-            var2 = var10000;
-
-            if (var2.canRead())
-            {
-                return;
-            }
-
-            var2.createNewFile();
-            var1.load(new FileInputStream(var2));
-            var1.setProperty("CraftingDifficulty", "2");
-            var1.store(new FileOutputStream(var2), "Brewing a Beer_Crafting Settings");
-        }
-        catch (Exception var3)
-        {
-            var3.printStackTrace();
-        }
-    }
-
-    public static int getPropertyVolume(String var0)
+		{
+		Properties props = new Properties();
+		File ini = new File(mc.getMinecraftDir(), "config/Brewing_a_Beer_Update.cfg");			
+		propertyManagerObj = new PropertyManager(new File(mc.getMinecraftDir(), "config/Brewing_a_Beer_Update.cfg"), this);
+		ini.mkdir();
+		props.load(new FileInputStream(ini));
+		props.setProperty("UpdateCheck", "true");
+		props.store(new FileOutputStream(ini), "BeerMod Update Checker");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+    	
+    	try
+    	{
+    	Properties props = new Properties();		
+		File ini = new File(mc.getMinecraftDir(), "config/Brewing_a_Beer_Crafting_Settings.cfg");
+		if (ini.canRead())
+		{
+			return;
+		}
+		else
+		{				
+			propertyManagerObj = new PropertyManager(new File(mc.getMinecraftDir(), "config/Brewing_a_Beer_Crafting_Settings.cfg"), this);
+			ini.mkdir();
+			props.load(new FileInputStream(ini));
+			props.setProperty("CraftingDifficulty", "2");
+			props.store(new FileOutputStream(ini), "Brewing a Beer_Crafting Settings");
+		}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static int getPropertyVolume(String store)
     {
         try
         {
-            Properties var1 = new Properties();
-            StringBuilder var10000 = new StringBuilder();
-            Minecraft var10001 = mc;
-            String var2 = var10000.append(Minecraft.getMinecraftDir()).append("/config/Brewing_a_Beer_Crafting_Settings.cfg").toString();
-            var1.load(new FileInputStream(var2));
-            String var3 = var1.getProperty(var0);
-            return Integer.parseInt(var3);
+            Properties properties = new Properties();
+            String store2 = (new StringBuilder()).append(mc.getMinecraftDir()).append("/config/Brewing_a_Beer_Crafting_Settings.cfg").toString();
+            properties.load(new FileInputStream(store2));
+            String store1 = properties.getProperty(store);
+            return Integer.parseInt(store1);
         }
-        catch (Exception var4)
+        catch(Exception exception)
         {
             System.err.println("Could not detect Brewing_a_Beer_Crafting_Settings.cfg");
-            var4.printStackTrace();
+            exception.printStackTrace();
             return 0;
         }
     }
@@ -126,7 +117,7 @@ public class ClientProxy extends CommonProxy
     }
 
     @ForgeSubscribe
-    public void onEntityUpdate(LivingEvent$LivingUpdateEvent var1)
+    public void onEntityUpdate(LivingUpdateEvent var1)
     {
         EntityClientPlayerMP var2 = FMLClientHandler.instance().getClient().thePlayer;
 
@@ -169,4 +160,54 @@ public class ClientProxy extends CommonProxy
             }
         }
     }
+
+	@Override
+	public void logInfo(String s) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	@SideOnly(Side.SERVER)
+	public Logger getServerLogger() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void logWarning(String s) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logWarningFormatted(String s, Object... var2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logWarningException(String s, Throwable throwable) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logSevere(String s) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logSevereException(String s, Throwable throwable) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void logFine(String s) {
+		// TODO Auto-generated method stub
+		
+	}
 }

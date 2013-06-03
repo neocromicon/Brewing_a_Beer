@@ -1,16 +1,16 @@
 package mods.neocromicon.src.GaerTank;
 
-import net.minecraftforge.client.IItemRenderer$ItemRenderType;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 class ItemGaerTank$1
 {
-    static final int[] $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType = new int[IItemRenderer$ItemRenderType.values().length];
+    static final int[] $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType = new int[ItemRenderType.values().length];
 
     static
     {
         try
         {
-            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[IItemRenderer$ItemRenderType.ENTITY.ordinal()] = 1;
+            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[ItemRenderType.ENTITY.ordinal()] = 1;
         }
         catch (NoSuchFieldError var3)
         {
@@ -19,7 +19,7 @@ class ItemGaerTank$1
 
         try
         {
-            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[IItemRenderer$ItemRenderType.EQUIPPED.ordinal()] = 2;
+            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[ItemRenderType.EQUIPPED.ordinal()] = 2;
         }
         catch (NoSuchFieldError var2)
         {
@@ -28,7 +28,7 @@ class ItemGaerTank$1
 
         try
         {
-            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[IItemRenderer$ItemRenderType.INVENTORY.ordinal()] = 3;
+            $SwitchMap$net$minecraftforge$client$IItemRenderer$ItemRenderType[ItemRenderType.INVENTORY.ordinal()] = 3;
         }
         catch (NoSuchFieldError var1)
         {

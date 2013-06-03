@@ -2,10 +2,10 @@ package mods.neocromicon.src.BierModBase;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod$Init;
-import cpw.mods.fml.common.Mod$Instance;
-import cpw.mods.fml.common.Mod$PostInit;
-import cpw.mods.fml.common.Mod$PreInit;
+import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PostInit;
+import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -67,7 +67,7 @@ public class BierMod
     public static CreativeTabs tabBeerCreative = new TabBeerCreative(CreativeTabs.getNextID(), "Brewing a Beer");
     public static Potion DrunkEffekt;
     
-    private GuiHandler guiHandler = new GuiHandler();23
+    private GuiHandler guiHandler = new GuiHandler();
     public static int LeeresBierGlasID;
     public static int SchwarzBierID;
     public static int PilsBierID;
@@ -147,7 +147,7 @@ public class BierMod
     public static Block BlockBierFass;
     public static Block GlassRegal;
 
-    @Mod$PreInit
+    @PreInit
     public void preInit(FMLPreInitializationEvent var1)
     {
         Configuration var2 = new Configuration(var1.getSuggestedConfigurationFile());
@@ -206,7 +206,7 @@ public class BierMod
         proxy.renderInformation();
     }
 
-    @Mod$Init
+    @Init
     public void init(FMLInitializationEvent var1)
     {
         initializeBlocksAndItems();
@@ -320,7 +320,7 @@ public class BierMod
     }
 
     @SideOnly(Side.CLIENT)
-    @Mod$PostInit
+    @PostInit
     public void postInitClient(FMLPostInitializationEvent var1)
     {
         int var2 = ClientProxy.getPropertyVolume("CraftingDifficulty");
@@ -343,7 +343,7 @@ public class BierMod
     }
 
     @SideOnly(Side.SERVER)
-    @Mod$PostInit
+    @PostInit
     public void postInitServer(FMLPostInitializationEvent var1)
     {
         int var2 = CommonProxy.getPropertyVolume("CraftingDifficulty");
