@@ -11,9 +11,11 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.server.MinecraftServer;
 
 public class UpdateChecker extends Thread
 {
@@ -39,7 +41,7 @@ public class UpdateChecker extends Thread
             try
             {
                 Properties var2 = new Properties();
-                File var3 = new File("config/Brewing_a_Beer_Update_Server.cfg");
+                File var3 = new File("Brewing_a_Beer_Update_Server.cfg");
                 var3.mkdir();
                 var2.load(new FileInputStream(var3));
                 var2.setProperty("UpdateCheck", "false");
@@ -83,51 +85,53 @@ public class UpdateChecker extends Thread
     @SideOnly(Side.SERVER)
     public void startServer()
     {
-        try
-        {
-            URL var1 = new URL("http://46.38.239.84/neo/updater/BeerModUpdate");
-            URL var2 = new URL("http://46.38.239.84/neo/updater/BeerModUpdateInfo");
-            BufferedReader var3 = new BufferedReader(new InputStreamReader(var1.openStream()));
-            BufferedReader var4 = new BufferedReader(new InputStreamReader(var2.openStream()));
-            String var6 = var4.readLine();
-            String var7 = BierMod.modVersion;
-            Logger var8 = Logger.getLogger("Minecraft");
-            String var5;
-
-            while ((var5 = var3.readLine()) != null)
-            {
-                if (var5.endsWith(var7))
-                {
-                    var8.info("[Brew a Beer] Your version is UpToDate: v" + var5);
-                }
-                else
-                {
-                    var8.info("[Brew a Beer] A new version is available: v" + var5);
-                    var8.info("[Brew a Beer] New Features of v" + var5 + ": " + var6);
-                    var8.info("[Brew a Beer] Your version is: v" + var7);
-                }
-            }
-
-            var3.close();
-        }
-        catch (Exception var9)
-        {
-            ;
-        }
+    	if(checkServer() == false)
+    	{
+    		FMLLog.log(BierMod.modID, Level.INFO, "Update Server is Offline!");
+    	}
+    	else
+    	{ try {
+    			URL url = new URL("http://46.38.239.84/neo/updater/BeerModUpdate");
+    			URL urlInfo = new URL("http://46.38.239.84/neo/updater/BeerModUpdateInfo");
+    			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+    			BufferedReader brInfo = new BufferedReader(new InputStreamReader(urlInfo.openStream()));
+    			
+    			String HoleDaten;
+    			String ModInfo = brInfo.readLine();
+    			String ModVersion = BierMod.modVersion;
+    		    while ((HoleDaten = br.readLine()) != null) {
+    				if (HoleDaten.endsWith(ModVersion)) {
+    					FMLLog.log(BierMod.modID, Level.INFO, "Your version is UpToDate: v" + HoleDaten);
+    				} else {
+    					FMLLog.log(BierMod.modID, Level.INFO, "A new version is available: v" + HoleDaten);
+                    	FMLLog.log(BierMod.modID, Level.INFO, "New Features of v" + HoleDaten + ": " + ModInfo);
+                    	FMLLog.log(BierMod.modID, Level.INFO, "Your version is: v" + ModVersion);
+    				}
+    			}
+    			br.close();
+    			brInfo.close();
+    		} catch (Exception e) {
+    		}   		
+    	}     
     }
 
     @SideOnly(Side.CLIENT)
     public void startClient()
     {
-        try
-        {
+    	EntityClientPlayerMP var8 = FMLClientHandler.instance().getClient().thePlayer;
+    	if(checkServer() == false)
+    	{
+    		var8.addChatMessage("\u00a72[Brew a Beer]\u00a7r Update Server is Offline!");
+    	}
+    	else
+    	{ try {
             URL var1 = new URL("http://46.38.239.84/neo/updater/BeerModUpdate");
             URL var2 = new URL("http://46.38.239.84/neo/updater/BeerModUpdateInfo");
             BufferedReader var3 = new BufferedReader(new InputStreamReader(var1.openStream()));
             BufferedReader var4 = new BufferedReader(new InputStreamReader(var2.openStream()));
             String var6 = var4.readLine();
             String var7 = BierMod.modVersion;
-            EntityClientPlayerMP var8 = FMLClientHandler.instance().getClient().thePlayer;
+            
             String var5;
 
             while ((var5 = var3.readLine()) != null)
@@ -144,13 +148,14 @@ public class UpdateChecker extends Thread
                     var8.addChatMessage("\u00a72[Brew a Beer]\u00a7r Your version is: v" + var7);
                 }
             }
-
             var3.close();
+            var4.close();
         }
         catch (Exception var9)
         {
             ;
         }
+      }
     }
 
     private static String getPropertyVolumeClient(String var0)
@@ -182,7 +187,7 @@ public class UpdateChecker extends Thread
             StringBuilder var10000 = new StringBuilder();
             StringBuilder var10001 = new StringBuilder();
             Minecraft var10002 = mc;
-            String var2 = var10000.append(var10001.append(Minecraft.getMinecraftDir()).append("//config//Brewing_a_Beer_Update_Server.cfg").toString()).toString();
+            String var2 = var10000.append(var10001.append("Brewing_a_Beer_Update_Server.cfg").toString()).toString();
             var1.load(new FileInputStream(var2));
             String var3 = var1.getProperty(var0);
             return var3;
@@ -193,5 +198,19 @@ public class UpdateChecker extends Thread
             var4.printStackTrace();
             return null;
         }
+    }
+    
+    public static boolean checkServer()
+    {
+    	try
+    	{
+    		URL var1 = new URL("http://46.38.239.84/neo/updater/BeerModUpdate");
+            URL var2 = new URL("http://46.38.239.84/neo/updater/BeerModUpdateInfo");
+            BufferedReader var3 = new BufferedReader(new InputStreamReader(var1.openStream()));
+            BufferedReader var4 = new BufferedReader(new InputStreamReader(var2.openStream()));
+            return true;
+    	}catch (Exception var9)
+    	{}
+    	return false;	
     }
 }

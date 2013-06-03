@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -19,14 +20,16 @@ public class CommonProxy
 
     public void renderInformation()
     {
+    	TickRegistry.registerTickHandler(new ServerTickHandler(), Side.SERVER);
+    	
     	try
 		{
 		Properties props = new Properties();
-		File ini = new File("Brewing_a_Beer_Update.cfg");
+		File ini = new File("Brewing_a_Beer_Update_Server.cfg");
 		ini.createNewFile();
 		props.load(new FileInputStream(ini));
 		props.setProperty("UpdateCheck", "true");
-		props.store(new FileOutputStream(ini), "BeerMod Update Checker");
+		props.store(new FileOutputStream(ini), "BeerMod Update Checker Server");
 		}catch(Exception e)
 		{
 			e.printStackTrace();
